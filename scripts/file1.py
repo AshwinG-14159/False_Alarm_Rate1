@@ -26,7 +26,7 @@ def fetch_files(source_path, destination_path, options=None):
     Returns:
     - Returns the return code of the rsync command.
     """
-    rsync_command = ['rsync', '-av' '-e', 'ssh', source_path, destination_path]
+    rsync_command = ['rsync', '-av', '-e', 'ssh', source_path, destination_path]
 
     if options:
         rsync_command.extend(options)
@@ -45,16 +45,11 @@ def fetch_files(source_path, destination_path, options=None):
 t_script_start=time.time()
 
 set_of_rows = []
-# set_of_rows_occ = []
-# set_of_rows_polar = []
-# names_of_regions=['occ', 'occ_free', 'free', 'free_occ']
+
 binning = 0.001
 gap = 1
 total_attempts = 100
 version = 1
-
-
-
 
 with open('../data/orbitinfo.csv', 'r') as f:
     r = csv.reader(f)
@@ -73,8 +68,6 @@ with open('../data/orbitinfo.csv', 'r') as f:
             count+=1
             if(count/gap>total_attempts): # leave 10 between any 2 and take a total of 200. Binning = 0.001
                 break
-
-
 
 
 print("file reading time:",time.time()-t_script_start)
@@ -112,6 +105,7 @@ for row in set_of_rows:
     print("orbit num: ", orbit_num)
 
     print('trying to access row:', row)
+    date = row[0].split('_')[0]
     orbit = row[0].split('_')[-1]
     # target_folder = path+f'level2/{row[0][:-6]}/czti/orbit/{row[0][-5:]}_V1.0'
     # mkf_file = target_folder+f'/AS1{row[0][9:-13]}_{row[0][-5:]}czt_level2.mkf'
@@ -126,8 +120,8 @@ for row in set_of_rows:
     #     continue
 
     # Example usage
-    source_path = f'cztipoc@192.168.11.37:/data2/czti/level2/20230902*level2/czti/orbit/{orbit}_V1.0/modeM0/*level2_bc.evt'
-    destination_path = 'data/evt_files/'
+    source_path = f'cztipoc@192.168.11.37:/data2/czti/level2/{date}*level2/czti/orbit/{orbit}_V1.0/modeM0/*level2_bc.evt'
+    destination_path = '../data/evt_files/'
 
     return_code = fetch_files(source_path, destination_path, None)
 
