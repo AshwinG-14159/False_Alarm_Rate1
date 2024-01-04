@@ -13,6 +13,7 @@ import time
 from scipy.ndimage import label
 
 import subprocess
+import glob
 
 def fetch_files(source_path, destination_path, options=None):
     """
@@ -46,7 +47,7 @@ t_script_start=time.time()
 
 set_of_rows = []
 
-binning = 0.001
+binning = 0.1
 gap = 1
 total_attempts = 100
 version = 1
@@ -93,6 +94,9 @@ err_counts = {"mkf file error":0,
 "unable to make hists by region": 0}
 
 
+
+
+
 orbit_num=0
 for row in set_of_rows:
     orbit_num+=1
@@ -121,7 +125,9 @@ for row in set_of_rows:
 
     # Example usage
     source_path = f'cztipoc@192.168.11.37:/data2/czti/level2/{date}*level2/czti/orbit/{orbit}_V1.0/modeM0/*level2_bc.evt'
-    destination_path = '../data/evt_files/'
+    destination_path = '../../data/evt_files/'
+
+    pattern_evt = f"*{orbit}*_bc.evt"
 
     return_code = fetch_files(source_path, destination_path, None)
 
@@ -129,8 +135,53 @@ for row in set_of_rows:
         print("Files fetched successfully.")
     else:
         print(f"Error fetching files. Return code: {return_code}")
+        continue
+
+    files = glob.glob(f'{destination_path}/*{pattern_evt}')
+
+    evt_file = files[0]
+
+    time_stamps = []
+    with fits.open(evt_file) as hdul:
+        for quarter in range(1,5):
+            q_data = hdul[quarter].data['Time']
+            start = hdul[quarter].header['TSTARTI']
+            end = hdul[quarter].header['TSTOPI']
+            q_data = q_data[(q_data>start) & (q_data<end)]
+            time_stamps.append(q_data)
+            print(start,end)
+    
+
+    bins = np.linspace(start, end, int((end-start)/binning))
+
+    hist1, _ = np.histogram(time_stamps[0], bins)
+    hist2, _ = np.histogram(time_stamps[1], bins)
+    hist3, _ = np.histogram(time_stamps[2], bins)
+    hist4, _ = np.histogram(time_stamps[3], bins)
+
+    hist1_og = hist1[int(100/binning):]
+    hist1_shifted = hist1[:-int(100/binning)]
+    hist2_og = hist2[int(100/binning):]
+    hist2_shifted = hist2[:-int(100/binning)]
+    hist3_og = hist3[int(100/binning):]
+    hist3_shifted = hist3[:-int(100/binning)]
+    hist4_og = hist4[int(100/binning):]
+    hist4_shifted = hist4[:-int(100/binning)]
+
+    bins = bins[:-1]
+    threshold = 150
+
+    hist1_coinc = (hist1_og>threshold) + (hist1_shifted>threshold)
+    hist2_coinc = (hist2_og>threshold) + (hist2_shifted>threshold)
+    hist3_coinc = (hist3_og>threshold) + (hist3_shifted>threshold)
+    hist4_coinc = (hist4_og>threshold) + (hist4_shifted>threshold)
 
 
+    plt.plot(bins[int(100/binning):], hist1_coinc)
+    plt.plot(bins[int(100/binning):], hist2_coinc)
+    plt.plot(bins[int(100/binning):], hist3_coinc)
+    plt.plot(bins[int(100/binning):], hist4_coinc)
+    plt.savefig(f'../plots/{date}_{orbit}.png')
 
 
     exit(0)
