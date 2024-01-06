@@ -52,7 +52,7 @@ gap = 1
 total_attempts = 100
 version = 1
 
-with open('../data/orbitinfo.csv', 'r') as f:
+with open('../../data/orbitinfo.csv', 'r') as f:
     r = csv.reader(f)
     count=0
     for row in r:
@@ -124,10 +124,10 @@ for row in set_of_rows:
     #     continue
 
     # Example usage
-    source_path = f'cztipoc@192.168.11.37:/data2/czti/level2/{date}*level2/czti/orbit/{orbit}_V1.0/modeM0/*level2_bc.evt'
+    source_path = f'cztipoc@192.168.11.37:/data2/czti/level2/{date}*level2/czti/orbit/{orbit}_V1.0/*czt_level2.mkf'#modeM0/*quad_badpix.fits'
     destination_path = '../../data/evt_files/'
 
-    pattern_evt = f"*{orbit}*_bc.evt"
+    pattern_evt = f"*{orbit}*_clean.evt"
 
     return_code = fetch_files(source_path, destination_path, None)
     return_code = fetch_files(source_path, destination_path, None)
@@ -137,7 +137,7 @@ for row in set_of_rows:
     else:
         print(f"Error fetching files. Return code: {return_code}")
         continue
-
+    exit(0)
     files = glob.glob(f'{destination_path}/*{pattern_evt}')
 
     evt_file = files[0]
