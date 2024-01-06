@@ -14,8 +14,8 @@ from astropy.stats import sigma_clipped_stats
 from scipy.signal import savgol_filter
 import datetime
 from astropy.table import Table, Column, vstack
-import astrosat_time
-import plot
+# import astrosat_time
+# import plot
 import pandas as pd
 import preproc
 import sqlite3
@@ -90,7 +90,7 @@ def saa_times(saa_start, saa_end, temp_startbin, temp_stopbin, bins_time, peakin
 	
 	return post_edge, pre_edge
 
-def grb_search(mdb, bsl, args, outpaths, orbitinfo, startbins, stopbins, dirname, method, saa_start, saa_end):
+def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, saa_start, saa_end):
 	# ## making table for saving detected peaks
 	numgrbs = 0
 	for c_tbin, n_tbin in enumerate(args.tbin):
@@ -100,7 +100,7 @@ def grb_search(mdb, bsl, args, outpaths, orbitinfo, startbins, stopbins, dirname
 		cutoffs_tosave = []
 		counts = []
 		for band in range(3):
-			tbl = Table.read('data/local_level2/'+dirname+'/czti/combined_'+str(n_tbin)+'_'+str(band)+'_Q'+str(0)+'_detrended.fits')
+			tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/combined_'+str(n_tbin)+'_'+str(band)+'_Q'+str(0)+'_detrended.fits')
 			y = np.shape(np.array(tbl['countrate']))
 			counts.append(y)
 		min_yc = np.min(counts)
@@ -108,7 +108,7 @@ def grb_search(mdb, bsl, args, outpaths, orbitinfo, startbins, stopbins, dirname
 			cutoff_bin = [0,0,0,0]
 			lc_band,mask_band = [],[] ##loading quadrant lcs and masks for each band
 			for quad in range(4):
-				tbl = Table.read('data/local_level2/'+dirname+'/czti/combined_'+str(n_tbin)+'_'+str(band)+'_Q'+str(quad)+'_detrended.fits')
+				tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/combined_'+str(n_tbin)+'_'+str(band)+'_Q'+str(quad)+'_detrended.fits')
 				lc_band.append(np.array(tbl['countrate'])[:min_yc])
 				mask_band.append(np.array(tbl['mask'])[:min_yc])
 				time = np.array(tbl['time'])[:min_yc]
@@ -133,8 +133,8 @@ def grb_search(mdb, bsl, args, outpaths, orbitinfo, startbins, stopbins, dirname
 		obsidtxt=dirname+'_'+str(n_tbin)+'_'+method+'_czti'
 		evs=[obsidtxt, dirname, 'czti',n_tbin, method+'_czti']+cutoffs_tosave[0]+cutoffs_tosave[1]+cutoffs_tosave[2]
 
-		lastrid=add_cutoff(mdb,evs)
-		lastrid=add_cutoff(bsl,evs)
+		# lastrid=add_cutoff(mdb,evs)
+		# lastrid=add_cutoff(bsl,evs)
 		lc_all = np.array(lc_all)
 		print("Doing CZTI analysis, binnning time : "+str(args.tbin[c_tbin])+", method : "+method)
 		band_peak_maps=np.vstack([peak_maps[0],peak_maps[1],peak_maps[2]])
@@ -227,13 +227,13 @@ def grb_search(mdb, bsl, args, outpaths, orbitinfo, startbins, stopbins, dirname
 						# Put this in bs
 						putInBS = True
 				if pre_edge == 0:
-					lastrowid = add_czti_event(bsl, event)
+					# lastrowid = add_czti_event(bsl, event)
 					print("In SAA")
 				elif putInBS:
-					lastrowid = add_czti_event(bsl, event)
+					# lastrowid = add_czti_event(bsl, event)
 					print("Readout")
 				else:
-					lastrowid = add_czti_event(mdb, event)
+					# lastrowid = add_czti_event(mdb, event)
 					print('Good Event')
 					numgrbs = numgrbs+1
 		else:

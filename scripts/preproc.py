@@ -14,8 +14,8 @@ from astropy.stats import sigma_clipped_stats
 from scipy.signal import savgol_filter
 import datetime
 from astropy.table import Table, Column, vstack
-import astrosat_time
-import plot
+# import astrosat_time
+# import plot
 import pandas as pd
 
 def gethist(lc_all, masks_all):

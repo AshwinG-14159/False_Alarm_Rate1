@@ -45,7 +45,7 @@ mkf_file = mkf_files[0]
 badpix_file = badpix_files[0]
 livetime_file = livetime_files[0]
 
-for band in range(4):
+for band in range(3):
     make_lightcurves_v2.bindata(quad_clean_file, mkf_file, badpix_file, livetime_file, 1, '', band)
 
 
