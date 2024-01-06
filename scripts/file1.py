@@ -130,7 +130,6 @@ for row in set_of_rows:
     pattern_evt = f"*{orbit}*_clean.evt"
 
     return_code = fetch_files(source_path, destination_path, None)
-    return_code = fetch_files(source_path, destination_path, None)
 
     if return_code == 0:
         print("Files fetched successfully.")
