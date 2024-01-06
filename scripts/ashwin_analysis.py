@@ -4,7 +4,7 @@ import glob
 from astropy.io import fits
 import numpy as np
 import matplotlib.pyplot as plt
-
+import make_lightcurves_v2
 import os
 
 def create_directory(directory_path):
@@ -25,15 +25,37 @@ def examine_stats(quad_clean):
 
 orbit = 43416
 binning = 10
-destination_path = "../../data/evt_files"
-pattern_evt = f"*{orbit}*_quad_clean.evt"
+destination_path = "home/czti/user_area/ashwin/winter/data/evt_files"
+pattern_quad_clean = f"*{orbit}*_quad_clean.evt"
+pattern_mkf = f"*{orbit}*_level2.mkf"
+pattern_badpix = f"*{orbit}*_quad_badpix.fits"
+pattern_livetime = f"*{orbit}*_quad_livetime.fits"
+
 plot_path = "../plots"
-evt_files = glob.glob(f'{destination_path}/*{pattern_evt}')
+quad_clean_files = glob.glob(f'{destination_path}/*{pattern_quad_clean}')
+mkf_files = glob.glob(f'{destination_path}/*{pattern_mkf}')
+badpix_files = glob.glob(f'{destination_path}/*{pattern_badpix}')
+livetime_files = glob.glob(f'{destination_path}/*{pattern_livetime}')
 
 create_directory(f"{plot_path}/{orbit}")
 
 time_stamps = []
-evt_file = evt_files[0]
+quad_clean_file = quad_clean_files[0]
+mkf_file = mkf_files[0]
+badpix_file = badpix_files[0]
+livetime_file = livetime_files[0]
+
+
+
+
+exit(0)
+
+orbitinfo, comb_startbins, comb_stopbins, comb_veto_startbins, comb_vetocift, comb_veto_stopbins, saa_start, saa_end = make_lightcurves_v2.make_detrended_lc(orbits, outpaths, args, dirname)
+
+
+
+
+
 with fits.open(evt_file) as hdul:
     for quarter in range(1,5):
         q_data = hdul[quarter].data['Time']
@@ -69,10 +91,12 @@ axs[3].set_title('d')
 plt.title(f'Light Curves: {orbit}')
 
 plt.savefig(f"{plot_path}/{orbit}/lc_{binning}.png")
+plt.cla()
 
+l_curve, mask_lc,startbins3,stopbins3, error_flag = make_lightcurves_v2.getlc_clean(10, hist1, 5, 'median', 3, 5, 2)
+print(l_curve.size, mask_lc.size, startbins3, stopbins3, error_flag)
 
-
-
-
-
+plt.plot(bins,l_curve)
+plt.savefig(f"{plot_path}/{orbit}/detrended_{binning}.png")
+plt.cla()
 
