@@ -25,10 +25,8 @@ def examine_stats(quad_clean):
 
 set_of_rows = []
 
-binning = 0.1
 gap = 1
 total_attempts = 100
-version = 1
 
 with open('../../data/orbitinfo.csv', 'r') as f:
     r = csv.reader(f)
