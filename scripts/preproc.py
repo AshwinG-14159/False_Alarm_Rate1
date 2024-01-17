@@ -262,9 +262,9 @@ def get_significance(lc,mask,total_counts):
 		for quad in range(4):
 			stats = sigma_clipped_stats(lc[band][quad],mask=mask[band][quad], sigma = 3.0, maxiters = 2)
 			if(stats[2]!=0):
-				sig = (max(lc[band][quad])-stats[0])/stats[2]
+				sig = (total_counts[band][quad]-stats[0])/stats[2]
 			else:
-				sig = (max(lc[band][quad])-stats[0])
+				sig = (total_counts[band][quad]-stats[0])
 			stat_significance.append(sig)
 		tot_sig = (stat_significance[4*band+0]**2 + stat_significance[4*band+1]**2 + stat_significance[4*band+2]**2 + 
 					stat_significance[4*band+3]**2)**0.5
