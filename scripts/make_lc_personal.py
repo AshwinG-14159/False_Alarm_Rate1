@@ -66,7 +66,7 @@ for row in set_of_rows:
 
 
     # orbit = 43416
-    binning = [0.001,0.002,0.004,0.008]
+    binning = [0.1,1,10]
     destination_path = f"/home/czti/user_area/ashwin/winter/data/evt_files/{orbit}/"
     pattern_quad_clean = f"*{orbit}*_quad_clean.evt"
     pattern_mkf = f"*{orbit}*_level2.mkf"
