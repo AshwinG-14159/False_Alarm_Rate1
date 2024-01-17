@@ -1,5 +1,6 @@
 import argparse
 import glob
+import csv
 
 from astropy.io import fits
 import numpy as np
@@ -22,82 +23,75 @@ def examine_stats(quad_clean):
     pass
 
 
+set_of_rows = []
 
-orbit = 43416
-binning = 10
-destination_path = "/home/czti/user_area/ashwin/winter/data/evt_files"
-pattern_quad_clean = f"*{orbit}*_quad_clean.evt"
-pattern_mkf = f"*{orbit}*_level2.mkf"
-pattern_badpix = f"*{orbit}*_quad_badpix.fits"
-pattern_livetime = f"*{orbit}*_quad_livetime.fits"
+binning = 0.1
+gap = 1
+total_attempts = 100
+version = 1
 
-plot_path = "../plots"
-quad_clean_files = glob.glob(f'{destination_path}/*{pattern_quad_clean}')
-mkf_files = glob.glob(f'{destination_path}/*{pattern_mkf}')
-badpix_files = glob.glob(f'{destination_path}/*{pattern_badpix}')
-livetime_files = glob.glob(f'{destination_path}/*{pattern_livetime}')
+with open('../../data/orbitinfo.csv', 'r') as f:
+    r = csv.reader(f)
+    count=0
+    for row in r:
 
-create_directory(f"{plot_path}/{orbit}")
+        if(count<1):
+            count+=1
+            continue
 
-time_stamps = []
-quad_clean_file = quad_clean_files[0]
-mkf_file = mkf_files[0]
-badpix_file = badpix_files[0]
-livetime_file = livetime_files[0]
+        if(float(row[5])>-180 and float(row[5])<180) and row[0][-6:]!='level2':
+            if(count%gap!=0):
+                count+=1
+                continue
+            set_of_rows.append(row)
+            count+=1
+            if(count/gap>total_attempts): # leave 10 between any 2 and take a total of 200. Binning = 0.001
+                break
 
-for band in range(3):
-    make_lightcurves_v2.bindata(quad_clean_file, mkf_file, badpix_file, livetime_file, 1, '', band)
+skip_till = ['20230329_A12_054T02_9000005550_level2_40553', 'A12_054T02_9000005550', 'priyanka_iucaa', 'SBS 0846+513', '132.4916', '51.1414', '5100.90680462', '2023-03-29T16:16:53', '2023-03-29T18:16:54']
+skipped = 1
+orbit_num=0
+for row in set_of_rows:
+    orbit_num+=1
+    if(row!=skip_till and not skipped):
+        continue
+    else:
+        if(row==skip_till):
+            skipped = 1
+    # t_row_start = time.time()
+    print("orbit num: ", orbit_num)
 
-
-exit(0)
-
-orbitinfo, comb_startbins, comb_stopbins, comb_veto_startbins, comb_vetocift, comb_veto_stopbins, saa_start, saa_end = make_lightcurves_v2.make_detrended_lc(orbits, outpaths, args, dirname)
-
-
-
-
-
-with fits.open(evt_file) as hdul:
-    for quarter in range(1,5):
-        q_data = hdul[quarter].data['Time']
-        start = hdul[quarter].header['TSTARTI']
-        end = hdul[quarter].header['TSTOPI']
-        q_data = q_data[(q_data>start) & (q_data<end)]
-        time_stamps.append(q_data)
-        print(start,end)
+    print('trying to access row:', row)
+    date = row[0].split('_')[0]
+    orbit = row[0].split('_')[-1]
 
 
-bins = np.linspace(start, end, int((end-start)/binning))
+    orbit = 43416
+    binning = [0.1,1,10]
+    destination_path = f"/home/czti/user_area/ashwin/winter/data/evt_files/{orbit}/"
+    pattern_quad_clean = f"*{orbit}*_quad_clean.evt"
+    pattern_mkf = f"*{orbit}*_level2.mkf"
+    pattern_badpix = f"*{orbit}*_quad_badpix.fits"
+    pattern_livetime = f"*{orbit}*_quad_livetime.fits"
 
-hist1, _ = np.histogram(time_stamps[0], bins)
-hist2, _ = np.histogram(time_stamps[1], bins)
-hist3, _ = np.histogram(time_stamps[2], bins)
-hist4, _ = np.histogram(time_stamps[3], bins)
+    plot_path = "../plots"
+    quad_clean_files = glob.glob(f'{destination_path}/*{pattern_quad_clean}')
+    mkf_files = glob.glob(f'{destination_path}/*{pattern_mkf}')
+    badpix_files = glob.glob(f'{destination_path}/*{pattern_badpix}')
+    livetime_files = glob.glob(f'{destination_path}/*{pattern_livetime}')
 
-bins = bins[:-1]
+    create_directory(f"{plot_path}/{orbit}")
 
-print(len(bins), len(hist1))
+    time_stamps = []
+    quad_clean_file = quad_clean_files[0]
+    mkf_file = mkf_files[0]
+    badpix_file = badpix_files[0]
+    livetime_file = livetime_files[0]
 
-fig, axs = plt.subplots(4, sharex = True, figsize = (6,10))
+    for bin in binning:
+        for band in range(3):
+            make_lightcurves_v2.bindata(quad_clean_file, mkf_file, badpix_file, livetime_file, bin, f'{orbit}', band)
 
-axs[0].plot(bins, hist1)
-axs[0].set_title('a')
-axs[1].plot(bins, hist2)
-axs[1].set_title('b')
-axs[2].plot(bins, hist3)
-axs[2].set_title('c')
-axs[3].plot(bins, hist4)
-axs[3].set_title('d')
 
-plt.title(f'Light Curves: {orbit}')
-
-plt.savefig(f"{plot_path}/{orbit}/lc_{binning}.png")
-plt.cla()
-
-l_curve, mask_lc,startbins3,stopbins3, error_flag = make_lightcurves_v2.getlc_clean(10, hist1, 5, 'median', 3, 5, 2)
-print(l_curve.size, mask_lc.size, startbins3, stopbins3, error_flag)
-
-plt.plot(bins,l_curve)
-plt.savefig(f"{plot_path}/{orbit}/detrended_{binning}.png")
-plt.cla()
+    exit(0)
 
