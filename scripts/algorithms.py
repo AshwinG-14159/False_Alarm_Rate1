@@ -92,6 +92,7 @@ def saa_times(saa_start, saa_end, temp_startbin, temp_stopbin, bins_time, peakin
 
 def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, saa_start, saa_end, thresh):
 	# ## making table for saving detected peaks
+	orbit = outpaths[0].split('/')[-1]
 	numgrbs = 0
 	for c_tbin, n_tbin in enumerate(args.tbin):
 		peak_maps = []
@@ -100,7 +101,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 		cutoffs_tosave = []
 		counts = []
 		for band in range(3):
-			tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/_'+str(n_tbin)+'_'+str(band)+'_Q'+str(0)+'_detrended.fits')
+			tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+str(orbit)+'/'+str(orbit)+'_'+str(n_tbin)+'_'+str(band)+'_Q'+str(0)+'_detrended.fits')
 			y = np.shape(np.array(tbl['countrate']))
 			counts.append(y)
 		min_yc = np.min(counts)
@@ -108,7 +109,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 			cutoff_bin = [0,0,0,0]
 			lc_band,mask_band = [],[] ##loading quadrant lcs and masks for each band
 			for quad in range(4):
-				tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/_'+str(n_tbin)+'_'+str(band)+'_Q'+str(quad)+'_detrended.fits')
+				tbl = Table.read('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+str(orbit)+'/'+str(orbit)+'_'+str(n_tbin)+'_'+str(band)+'_Q'+str(quad)+'_detrended.fits')
 				lc_band.append(np.array(tbl['countrate'])[:min_yc])
 				mask_band.append(np.array(tbl['mask'])[:min_yc])
 				time = np.array(tbl['time'])[:min_yc]
@@ -128,7 +129,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 				peak_ind_bin, peak_map = preproc.getpeaks(lc_band, cutoff_bin)
 				peak_maps.append(peak_map)
 				cutoffs_tosave.append(cutoff_bin)
-				print(f"here: {np.sum(peak_map, axis=1)} crossings")
+				# print(f"here: {np.sum(peak_map, axis=1)} crossings")
 				
 		# cutoffs_tosave = cutoffs_tosave.astype(float)
 		obsidtxt=dirname+'_'+str(n_tbin)+'_'+method+'_czti'
@@ -137,11 +138,11 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 		# lastrid=add_cutoff(mdb,evs)
 		# lastrid=add_cutoff(bsl,evs)
 		lc_all = np.array(lc_all)
-		print("Doing CZTI analysis, binnning time : "+str(args.tbin[c_tbin])+", method : "+method)
+		# print("Doing CZTI analysis, binnning time : "+str(args.tbin[c_tbin])+", method : "+method)
 		band_peak_maps=np.vstack([peak_maps[0],peak_maps[1],peak_maps[2]])
-		print("Shape of band peak map: ",band_peak_maps.shape)
+		# print("Shape of band peak map: ",band_peak_maps.shape)
 		peak_ind_bin = np.where(np.sum(band_peak_maps, axis=0) >= 4.0)
-		print("peak_ind_bin:",peak_ind_bin)
+		# print("peak_ind_bin:",peak_ind_bin)
 		for orb in range(len(outpaths)):
 			global start_orbit_czti, end_orbit_czti
 			start_orbit_czti = orbitinfo['start_of_orbit'][orb]
@@ -152,9 +153,9 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 		storage = []
 		if peak_ind_bin[0].tolist():
 			peakinds = peak_ind_bin[0]
-			print('peakinds',peakinds)
+			# print('peakinds',peakinds)
 			total_counts = preproc.total_countrate(bins_time,peakinds,peak_ind_bin[0],lc_all)
-			print('total counts:', total_counts)
+			# print('total counts:', total_counts)
 			print("GRB_time   Rank   Detected_in_quads  rate")
 			print('------------------------------------------')
 			det_quad = []
@@ -206,8 +207,8 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 				putInBS = False
 				if method=='nsigma' and n_tbin == 0.1:
 					# Need to check for readout dips in nsigma and 0.1 tbins. 
-					print(glob.glob('data/local_level2/'+dirname+'/czti/orbit/'+orbitname+'/*quad_clean.evt'))
-					eventfile = glob.glob('data/local_level2/'+dirname+'/czti/orbit/'+orbitname+'/*quad_clean.evt')[0]
+					print(glob.glob('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+orbit+'/*'+orbit+'*quad_clean.evt'))
+					eventfile = glob.glob('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+orbit+'/*'+orbit+'*quad_clean.evt')[0]
 					hdu = fits.open(eventfile)
 					readouts = [False, False, False, False] # Whether we have readout dip in each quadrant
 					for quad in range(4):

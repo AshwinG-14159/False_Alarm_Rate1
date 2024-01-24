@@ -153,12 +153,13 @@ for row in set_of_rows:
     orbit = row[0].split('_')[-1]
 
 
-    binning = [0.1,1,10]
+    binnings = [0.1,1,10]
 
     my_path = f"../../data/evt_files/{orbit}"
 
 
     plot_path = "../plots"
+    result_path = '../results'
 
     log_path = "../logs"
 
@@ -166,6 +167,7 @@ for row in set_of_rows:
 
     create_directory(f"{plot_path}/{orbit}")
     create_directory(f"{log_path}/{orbit}")
+    create_directory(f"{result_path}/{orbit}")
 
 
     pattern_lc = f"*.lc"
@@ -173,15 +175,15 @@ for row in set_of_rows:
     # print(lc_files)
     parser = makeparser()
     args = parser.parse_args()
-    args.tbin = binning
+    args.tbin = binnings
 
 
 
-    orbitinfo, comb_startbins, comb_stopbins, comb_veto_startbins, comb_veto_stopbins, saa_start, saa_end = make_lightcurves_v2.make_detrended_lc(orbits = [my_path], outpaths=[my_path], args=args, dirname='.')
+    orbitinfo, comb_startbins, comb_stopbins, comb_veto_startbins, comb_veto_stopbins, saa_start, saa_end = make_lightcurves_v2.make_detrended_lc(orbits = [my_path], outpaths=[f'{my_path}'], args=args, dirname='.')
 
     log_and_plot = 1
 
-    orbit_len = 0
+    orbit_len = []
 
     if(log_and_plot):
 
@@ -189,21 +191,21 @@ for row in set_of_rows:
 
         logfile.write(f"lcs made\n orbit: {orbit}\n")
 
-
-        for band in range(3):
-            quad_lcs_rates = []
-            quad_lcs_times = []
-            for quad in range(4):
-                lc_file = f"{my_path}/{orbit}_1_{band}_Q{quad}.lc"
-                with fits.open(lc_file) as hdul:
-                    data = hdul[1].data
-                    quad_lcs_rates.append(data['RATE'])
-                    quad_lcs_times.append(data['time'])
-                    orbit_len = len(data['time'])
-                    logfile.write(f"band: {band}, quad:{quad}\nStarts from {quad_lcs_times[-1][0]}\n Ends at {quad_lcs_times[-1][-1]}\n Length:{quad_lcs_times[-1][-1]-quad_lcs_times[-1][0]}\n")
-                # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
-            
-            plot_quads(quad_lcs_times, quad_lcs_rates, f"LC: {orbit}, band: {band}", f"lc_{binning}_{band}")
+        for binning in binnings:
+            for band in range(3):
+                quad_lcs_rates = []
+                quad_lcs_times = []
+                for quad in range(4):
+                    lc_file = f"{my_path}/{orbit}_{binning}_{band}_Q{quad}.lc"
+                    with fits.open(lc_file) as hdul:
+                        data = hdul[1].data
+                        quad_lcs_rates.append(data['RATE'])
+                        quad_lcs_times.append(data['time'])
+                        orbit_len.append(len(data['time']))
+                        logfile.write(f"band: {band}, quad:{quad}, binning:{binning}\nStarts from {quad_lcs_times[-1][0]}\n Ends at {quad_lcs_times[-1][-1]}\n Length:{quad_lcs_times[-1][-1]-quad_lcs_times[-1][0]}\n")
+                    # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
+                
+                plot_quads(quad_lcs_times, quad_lcs_rates, f"LC: {orbit}, band: {band}, binning: {binning}", f"lc_{orbit}_{binning}_{band}")
 
 
 
@@ -211,51 +213,59 @@ for row in set_of_rows:
 
 
         # #plot detrended lightcurves
+        for binning in binnings:
+            for band in range(3):
+                quad_lcs_rates = []
+                quad_lcs_times = []
+                quad_lcs_rates_og = []
+                quad_lcs_times_og = []
 
-        for band in range(3):
-            quad_lcs_rates = []
-            quad_lcs_times = []
-            for quad in range(4):
-                lc_file = f"{my_path}/{orbit}_1_{band}_Q{quad}_detrended.fits"
-                with fits.open(lc_file) as hdul:
-                    rates = hdul[1].data['countrate']
-                    times = hdul[1].data['time']
-                    times_net, rates_net = give_window_lcs(comb_startbins, comb_stopbins, times, rates)
-                    quad_lcs_rates.append(rates_net)
-                    quad_lcs_times.append(times_net)
-                # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
+                for quad in range(4):
+                    lc_file = f"{my_path}/{orbit}_{binning}_{band}_Q{quad}_detrended.fits"
+                    with fits.open(lc_file) as hdul:
+                        rates = hdul[1].data['countrate']
+                        times = hdul[1].data['time']
+                        quad_lcs_rates_og.append(rates)
+                        quad_lcs_times_og.append(times)
+
+                        times_net, rates_net = give_window_lcs(comb_startbins, comb_stopbins, times, rates)
+                        quad_lcs_rates.append(rates_net)
+                        quad_lcs_times.append(times_net)
+                    # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
+                plot_quads(quad_lcs_times_og, quad_lcs_rates_og, f"LC Detrended: {orbit}, band: {band}, binninh:{binning}", f"lc_detrended_{orbit}_{binning}_{band}")
+
+
+                # for i in range(len(quad_lcs_rates[0])):
+                #     rates_window = [quad_lcs_rates[0][i], quad_lcs_rates[1][i], quad_lcs_rates[2][i], quad_lcs_rates[3][i]]
+                #     times_window = [quad_lcs_times[0][i], quad_lcs_times[1][i], quad_lcs_times[2][i], quad_lcs_times[3][i]]
+                #     # plot_quads(times_window, rates_window, f"LC Detrended: {orbit}, band: {band}, {i}", f"lc_{binning}_{band}_detrended_{i}")
+
+                rates_attached = [[],[],[],[]]
+                times_attached = [[],[],[],[]]
+
+                for i in range(len(quad_lcs_rates[0])):
+                    for j in range(4):
+                        # print(rates_attached[j], quad_lcs_rates[j][i])
+                        rates_attached[j]+=list(quad_lcs_rates[j][i])
+                        times_attached[j]+=list(quad_lcs_times[j][i])
             
-
-
-            for i in range(len(quad_lcs_rates[0])):
-                rates_window = [quad_lcs_rates[0][i], quad_lcs_rates[1][i], quad_lcs_rates[2][i], quad_lcs_rates[3][i]]
-                times_window = [quad_lcs_times[0][i], quad_lcs_times[1][i], quad_lcs_times[2][i], quad_lcs_times[3][i]]
-                plot_quads(times_window, rates_window, f"LC Detrended: {orbit}, band: {band}, {i}", f"lc_{binning}_{band}_detrended_{i}")
-
-            rates_attached = [[],[],[],[]]
-            times_attached = [[],[],[],[]]
-
-            for i in range(len(quad_lcs_rates[0])):
-                for j in range(4):
-                    # print(rates_attached[j], quad_lcs_rates[j][i])
-                    rates_attached[j]+=list(quad_lcs_rates[j][i])
-                    times_attached[j]+=list(quad_lcs_times[j][i])
-            
-            quad_lcs_rates = rates_attached
-            quad_lcs_times = times_attached
-            print(len(quad_lcs_rates[0]))
-            for quad in range(4):
-                logfile.write(f"""band: {band}, quad:{quad}\n mean: {np.mean(quad_lcs_rates[quad])}\n std: {np.std(quad_lcs_rates[quad])}
-        max: {np.max(quad_lcs_rates[quad])}\nmin: {np.min(quad_lcs_rates[quad])}\n""")
-
-            bins = np.linspace(-25,25,int((25+25)/0.5))
-            hist1,_ = np.histogram(quad_lcs_rates[0], bins)
-            hist2,_ = np.histogram(quad_lcs_rates[1], bins)
-            hist3,_ = np.histogram(quad_lcs_rates[2], bins)
-            hist4,_ = np.histogram(quad_lcs_rates[3], bins)
-            bins = bins[:-1]
-            total_bins = [bins,bins,bins,bins]
-            plot_quads(total_bins, [hist1,hist2,hist3,hist4], f"Freq: {orbit} {band}", f"freq_hist_{binning}_{band}")
+                quad_lcs_rates = rates_attached
+                quad_lcs_times = times_attached
+                print(len(quad_lcs_rates[0]))
+                for quad in range(4):
+                    logfile.write(f"""band: {band}, quad:{quad}, binning:{binning}\n mean: {np.mean(quad_lcs_rates[quad])}\n std: {np.std(quad_lcs_rates[quad])}
+            max: {np.max(quad_lcs_rates[quad])}\nmin: {np.min(quad_lcs_rates[quad])}\n""")
+                my_vals = [np.max(quad_lcs_rates[quad]), -np.min(quad_lcs_rates[quad])]
+                # print(my)
+                binning_range = max(my_vals)
+                bins = np.linspace(-binning_range,binning_range,int((2*binning_range)/0.5))
+                hist1,_ = np.histogram(quad_lcs_rates[0], bins)
+                hist2,_ = np.histogram(quad_lcs_rates[1], bins)
+                hist3,_ = np.histogram(quad_lcs_rates[2], bins)
+                hist4,_ = np.histogram(quad_lcs_rates[3], bins)
+                bins = bins[:-1]
+                total_bins = [bins,bins,bins,bins]
+                plot_quads(total_bins, [hist1,hist2,hist3,hist4], f"Freq: {orbit} {band} {binning}", f"freq_hist_{orbit}_{binning}_{band}")
 
 
         logfile.write("\nVeto\n\n")
@@ -263,17 +273,20 @@ for row in set_of_rows:
         # plot veto lightcurves
 
         # for band in range(3):
-        quad_lcs_rates = []
-        quad_lcs_times = []
-        for quad in range(4):
-            lc_file = f"{my_path}/evt_files_veto_1_Q{quad}_detrended.fits"
-            with fits.open(lc_file) as hdul:
-                quad_lcs_rates.append(hdul[1].data['vetocounts'])
-                quad_lcs_times.append(hdul[1].data['time'])
-            # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
-            logfile.write(f"""quad: {quad}\n mean: {np.mean(quad_lcs_rates[quad])}\n std: {np.std(quad_lcs_rates[quad])}
-        max: {np.max(quad_lcs_rates[quad])}\nmin: {np.min(quad_lcs_rates[quad])}\n""")
-        plot_quads(quad_lcs_times, quad_lcs_rates, f"Veto: {orbit}", f"veto_lc_{binning}_detrended")
+        for binning in binnings:
+            if(binning==0.1):
+                continue
+            quad_lcs_rates = []
+            quad_lcs_times = []
+            for quad in range(4):
+                lc_file = f"{my_path}/{orbit}_veto_{binning:.1f}_Q{quad}_detrended.fits"
+                with fits.open(lc_file) as hdul:
+                    quad_lcs_rates.append(hdul[1].data['vetocounts'])
+                    quad_lcs_times.append(hdul[1].data['time'])
+                # print(quad_lcs_times[-1][0], quad_lcs_times[-1][-1])
+                logfile.write(f"""quad: {quad}, binning:{binning}\n mean: {np.mean(quad_lcs_rates[quad])}\n std: {np.std(quad_lcs_rates[quad])}
+            max: {np.max(quad_lcs_rates[quad])}\nmin: {np.min(quad_lcs_rates[quad])}\n""")
+            plot_quads(quad_lcs_times, quad_lcs_rates, f"Veto: {orbit} {binning}", f"veto_lc_{orbit}_{binning}_detrended")
 
 
 
@@ -282,26 +295,35 @@ for row in set_of_rows:
 
 
     print("Search Starting!")
+    for binning_id in range(len(binnings)):
+        binning = binnings[binning_id]
+        args.tbin = [binning]
+        list_of_counts = []
+        if(binning==0.1):
+            list_of_thresh = np.linspace(1.5,2.5,11)#[3,2.5,2.1,2,1.9,1.8,1.7,1.6,1.5,1.4,1.3,1.2,1.1,1]
+        if(binning in [1,10]):
+            list_of_thresh = np.linspace(1.5,2.5,11)#[3,2.5,2.1,2,1.9,1.8,1.7,1.6,1.5,1.4,1.3,1.2,1.1,1]
 
-    list_of_counts = []
+        for i in list_of_thresh:
+            numgrb_nsigma,storages = algorithms.grb_search(args, [my_path], orbitinfo, comb_startbins, comb_stopbins, '.', 'nsigma', saa_start, saa_end, i)
+            list_of_counts.append(numgrb_nsigma)
+            print(f"binning: {binning}, i: {i}")
 
-    list_of_thresh = np.linspace(1,2.5,16)#[3,2.5,2.1,2,1.9,1.8,1.7,1.6,1.5,1.4,1.3,1.2,1.1,1]
-
-    for i in list_of_thresh:
-        numgrb_nsigma,storages = algorithms.grb_search(args, [my_path], orbitinfo, comb_startbins, comb_stopbins, '.', 'nsigma', saa_start, saa_end, i)
-        list_of_counts.append(numgrb_nsigma)
-
-    list_of_counts = np.array(list_of_counts)
-
-    plt.plot(list_of_thresh, list_of_counts/orbit_len, drawstyle = "steps")
-    plt.title(f"False Alarm Rates, Orbit {orbit}, binning: {args.tbin[0]}, alg:nsigma, orbitlen = {orbit_len}s")
-    plt.yscale('log')
-    plt.xlabel("nsigma threshold")
-    plt.ylabel("False Alarm Rate")
-    plt.savefig(f"{plot_path}/{orbit}/False alarm counts")
+        list_of_thresh = [-1]+list_of_thresh
+        list_of_counts = np.array([orbit_len[binning_id]]+list_of_counts)
+        data_to_save = np.array([list_of_thresh, list_of_counts])
+        np.save(f"{result_path}/{orbit}/{orbit}_{binning}_nsigma_FAR.npy", data_to_save)
+        # print(list_of_counts)
+        plt.plot(list_of_thresh, list_of_counts/orbit_len[binning_id], drawstyle = "steps")
+        plt.title(f"False Alarm Rates, Orbit {orbit}, binning: {args.tbin[0]}, alg:nsigma, orbitlen = {orbit_len}s")
+        plt.yscale('log')
+        plt.xlabel("nsigma threshold")
+        plt.ylabel("False Alarm Rate")
+        plt.savefig(f"{plot_path}/{orbit}/{orbit}_False_alarm_counts_{binning}.png")
+        plt.close()
 
 
 
 
-    exit(0)
+    # exit(0)
 

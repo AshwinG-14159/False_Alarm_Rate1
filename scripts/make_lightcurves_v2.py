@@ -654,7 +654,7 @@ def veto_lc_binning(time, veto_lc, t_bin, orbit):
         quad_lcs=[]
         time=np.array(time)
         veto_lc=np.array(veto_lc)
-        # print(time.shape, veto_lc.shape)
+        # print(time.shape, veto_lc.shape, t_bin)
         for num, binval in enumerate(t_bin):
                 # if(binval == 1.0):
                 #       continue
@@ -671,11 +671,14 @@ def veto_lc_binning(time, veto_lc, t_bin, orbit):
                         quad_lc.append(np.array(lcbinned))
                 tbins.append(np.array(lctable_grouped['time'].groups.aggregate(np.mean)))
                 quad_lcs.append(quad_lc)
-        # print(len(tbins), type(tbins), tbins[0].shape, type(tbins[0]), type(tbins[0][0]))
-        tbins = np.array(tbins,dtype=float)
+        # print(len(tbins), type(tbins), tbins[0].shape, tbins[1].shape, type(tbins[0]), type(tbins[0][0]))
+        # print(tbins)
+        tbins = np.array(tbins, dtype=object)
         # print(tbins.dtype)
-        quad_lcs = np.array(quad_lcs,dtype=object)
+        quad_lcs = np.array(quad_lcs, dtype=object)
         return tbins, quad_lcs
+
+
 
 def getvetowindows(orbit, veto_time, veto_lc, threshold, bin_t, tclip, minwidth=0):
         """Return windows where rate is above threshold.
@@ -829,7 +832,7 @@ def getvetobin_lcs(tbins, veto_lc, outpath, outbase, args, orbit):
                         #         tbins[num] = tbins[num].astype(np.float64)
                         # print("Data type new of tbins[num]:", tbins[num].dtype)
 
-                        c1 = fits.Column(name='time',array=tbins[num],format='D')
+                        c1 = fits.Column(name='time',array=tbins[num],format='A')
                         c2 = fits.Column(name='vetocounts',array=veto_detrend,format='D')
                         c3 = fits.Column(name='vetomask',array=veto_mask,format='L')
                         c4 = fits.Column(name='orig_vetocts',array=lc,format='D')
@@ -917,7 +920,7 @@ def make_detrended_lc(orbits,outpaths,args,dirname):
                 orbitinfo.loc[o]['error_flag'] = []
                 for c_tbin,n_tbin in enumerate(args.tbin):
                         for band in range(3):
-                                quad_lc = "{orbit}/_{tbin}_{band}".format(orbit=outpaths[o],outbase=outbase,tbin=n_tbin,band=band)
+                                quad_lc = "{orbit}/{outbase}_{tbin}_{band}".format(orbit=outpaths[o],outbase=outbase,tbin=n_tbin,band=band)
                                 # bins_band, lc_band, masks_band,startbins3,stopbins3, error_flag = getbin_lcs(n_tbin, quad_lc, args.threshold, args.filtertype, args.filter_order,args.filterwidth, args.tclip)
                                 bins_band, lc_band, masks_band,startbins3,stopbins3, error_flag, saa_start, saa_end = getbin_lcs(n_tbin, quad_lc, args.threshold, args.filtertype, args.filter_order,args.filterwidth, args.tclip)
                                 print('saa_start', saa_start, 'saa_end', saa_end)
@@ -1014,7 +1017,7 @@ def make_detrended_lc(orbits,outpaths,args,dirname):
         for num,t_bin in enumerate(veto_tbin):
                 for quad in range(4):
                         tbl = Table()
-                        tbl.add_column(Column(name='time',data=[],dtype='float64'))
+                        tbl.add_column(Column(name='time',data=[]))
                         tbl.add_column(Column(name='vetocounts',data=[],dtype=float))
                         tbl.add_column(Column(name='vetomask',data=[],dtype=bool))
                         tbl.add_column(Column(name='orig_vetocts',data=[],dtype=float))

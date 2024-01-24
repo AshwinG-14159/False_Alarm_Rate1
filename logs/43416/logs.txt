@@ -1,136 +1,372 @@
 lcs made
  orbit: 43416
-band: 0, quad:0
+band: 0, quad:0, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 0, quad:1, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 0, quad:2, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 0, quad:3, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 1, quad:0, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 1, quad:1, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 1, quad:2, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 1, quad:3, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 2, quad:0, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 2, quad:1, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 2, quad:2, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 2, quad:3, binning:0.1
+Starts from 434496335.05
+ Ends at 434503373.9501049
+ Length:7038.900104880333
+band: 0, quad:0, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 0, quad:1
+band: 0, quad:1, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 0, quad:2
+band: 0, quad:2, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 0, quad:3
+band: 0, quad:3, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 1, quad:0
+band: 1, quad:0, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 1, quad:1
+band: 1, quad:1, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 1, quad:2
+band: 1, quad:2, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 1, quad:3
+band: 1, quad:3, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 2, quad:0
+band: 2, quad:0, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 2, quad:1
+band: 2, quad:1, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 2, quad:2
+band: 2, quad:2, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
-band: 2, quad:3
+band: 2, quad:3, binning:1
 Starts from 434496335.5
  Ends at 434503373.5
  Length:7038.0
+band: 0, quad:0, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 0, quad:1, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 0, quad:2, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 0, quad:3, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 1, quad:0, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 1, quad:1, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 1, quad:2, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 1, quad:3, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 2, quad:0, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 2, quad:1, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 2, quad:2, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
+band: 2, quad:3, binning:10
+Starts from 434496340.0
+ Ends at 434503370.0
+ Length:7030.0
 
 Stats of the LCs:
 
-band: 0, quad:0
- mean: 0.02208894663463438
- std: 5.260264727010674
-    max: 19.125017166137695
+band: 0, quad:0, binning:0.1
+ mean: 0.06964424954578684
+ std: 15.77089507137941
+            max: 105.21466064453125
+min: -31.987979888916016
+band: 0, quad:1, binning:0.1
+ mean: -0.008192887597987468
+ std: 12.832122008091849
+            max: 92.09403228759766
+min: -27.813621520996094
+band: 0, quad:2, binning:0.1
+ mean: 0.01824783473387631
+ std: 14.842178185773504
+            max: 83.22181701660156
+min: -28.303529739379883
+band: 0, quad:3, binning:0.1
+ mean: -0.002806130926577052
+ std: 13.836951259001385
+            max: 90.67571258544922
+min: -28.212074279785156
+band: 1, quad:0, binning:0.1
+ mean: 0.03777444984996285
+ std: 18.196211172905905
+            max: 102.97169494628906
+min: -40.52461242675781
+band: 1, quad:1, binning:0.1
+ mean: 0.03365337800579942
+ std: 18.314030779955473
+            max: 98.98817443847656
+min: -41.78824996948242
+band: 1, quad:2, binning:0.1
+ mean: -0.013488957827160171
+ std: 17.911404688327757
+            max: 98.17481994628906
+min: -35.6513557434082
+band: 1, quad:3, binning:0.1
+ mean: 0.02290161322254227
+ std: 16.983161825211983
+            max: 91.68144226074219
+min: -35.640350341796875
+band: 2, quad:0, binning:0.1
+ mean: 0.05419141502761219
+ std: 18.575368201096065
+            max: 113.93215942382812
+min: -39.397151947021484
+band: 2, quad:1, binning:0.1
+ mean: 0.023346627989987587
+ std: 20.058232728463757
+            max: 102.44197082519531
+min: -46.71991729736328
+band: 2, quad:2, binning:0.1
+ mean: 0.036932672028697475
+ std: 18.60753778295373
+            max: 135.7411651611328
+min: -42.28364181518555
+band: 2, quad:3, binning:0.1
+ mean: 0.031032445764474788
+ std: 16.707853204616804
+            max: 84.46288299560547
+min: -32.772098541259766
+band: 0, quad:0, binning:1
+ mean: 0.05559424654861223
+ std: 5.2433389034898505
+            max: 18.72457504272461
 min: -20.761638641357422
-band: 0, quad:1
- mean: 0.0010963924128655524
- std: 4.32373779314867
-    max: 14.780952453613281
+band: 0, quad:1, binning:1
+ mean: -0.013786187013536521
+ std: 4.318630885703809
+            max: 14.780952453613281
 min: -14.29435920715332
-band: 0, quad:2
- mean: 0.01628232277886716
- std: 5.0644640746955725
-    max: 20.025808334350586
+band: 0, quad:2, binning:1
+ mean: 0.03431037583848182
+ std: 5.051044319006971
+            max: 20.025808334350586
 min: -19.686203002929688
-band: 0, quad:3
- mean: 0.0004412016197895498
- std: 4.357896841451257
-    max: 17.35887336730957
-min: -15.003532409667969
-band: 1, quad:0
- mean: -0.003281783506360357
- std: 6.135597660033778
-    max: 24.04038429260254
+band: 0, quad:3, binning:1
+ mean: 0.04996453008837443
+ std: 4.286325251038224
+            max: 15.755769729614258
+min: -13.007375717163086
+band: 1, quad:0, binning:1
+ mean: 0.04242979893023479
+ std: 6.033512087649637
+            max: 24.04038429260254
 min: -22.655689239501953
-band: 1, quad:1
- mean: -0.00029596060457027487
- std: 6.101476705367957
-    max: 24.151592254638672
+band: 1, quad:1, binning:1
+ mean: 0.01079418350604255
+ std: 5.99178850332789
+            max: 20.824302673339844
 min: -26.174232482910156
-band: 1, quad:2
- mean: -0.007048265552704504
- std: 5.91125730719456
-    max: 22.88869857788086
+band: 1, quad:2, binning:1
+ mean: 0.00909804260061642
+ std: 5.864083014945013
+            max: 22.88869857788086
 min: -24.06471824645996
-band: 1, quad:3
- mean: -0.005692431922133488
- std: 5.600217470185937
-    max: 26.311626434326172
-min: -27.875986099243164
-band: 2, quad:0
- mean: 0.004054239489898976
- std: 5.977200472080351
-    max: 21.783592224121094
+band: 1, quad:3, binning:1
+ mean: 0.034028062569180166
+ std: 5.531115840673944
+            max: 26.311626434326172
+min: -18.734298706054688
+band: 2, quad:0, binning:1
+ mean: 0.06355200327275681
+ std: 5.951894801973695
+            max: 21.783592224121094
 min: -32.83313751220703
-band: 2, quad:1
- mean: -0.010064589954295369
- std: 6.67646183862927
-    max: 21.149188995361328
+band: 2, quad:1, binning:1
+ mean: 0.016513859420024788
+ std: 6.611739546572671
+            max: 21.149188995361328
 min: -28.498050689697266
-band: 2, quad:2
- mean: 0.017289107934587954
- std: 5.954890422897188
-    max: 21.535991668701172
+band: 2, quad:2, binning:1
+ mean: 0.038549524811944604
+ std: 5.959363022093982
+            max: 21.535991668701172
 min: -22.485918045043945
-band: 2, quad:3
- mean: 0.0036196727054426895
- std: 5.3192217968920055
-    max: 22.425504684448242
-min: -18.564725875854492
+band: 2, quad:3, binning:1
+ mean: 0.06286643870507728
+ std: 5.2992794952693005
+            max: 22.425504684448242
+min: -17.575359344482422
+band: 0, quad:0, binning:10
+ mean: 0.04401156834193638
+ std: 1.761942483068019
+            max: 4.464195251464844
+min: -10.690908432006836
+band: 0, quad:1, binning:10
+ mean: -0.0011697769165039062
+ std: 1.3077173949874077
+            max: 3.937528610229492
+min: -4.668997764587402
+band: 0, quad:2, binning:10
+ mean: 0.0699529266357422
+ std: 1.5573760341131466
+            max: 4.618183135986328
+min: -4.948019027709961
+band: 0, quad:3, binning:10
+ mean: 0.09109532220023019
+ std: 1.241308472740325
+            max: 3.783681869506836
+min: -4.635198593139648
+band: 1, quad:0, binning:10
+ mean: -0.0044058935982840405
+ std: 2.085832716866759
+            max: 4.72265625
+min: -10.769464492797852
+band: 1, quad:1, binning:10
+ mean: 0.07775032588413784
+ std: 2.077357212524005
+            max: 7.765501022338867
+min: -8.751514434814453
+band: 1, quad:2, binning:10
+ mean: 0.0408678708757673
+ std: 1.7238109240914097
+            max: 4.342891693115234
+min: -5.6324005126953125
+band: 1, quad:3, binning:10
+ mean: 0.13161925724574497
+ std: 1.720820602924771
+            max: 7.164567947387695
+min: -6.248950958251953
+band: 2, quad:0, binning:10
+ mean: 0.03631443023681641
+ std: 2.041402062538257
+            max: 5.779022216796875
+min: -12.233335494995117
+band: 2, quad:1, binning:10
+ mean: 0.05633414677211217
+ std: 2.285145076140843
+            max: 10.061119079589844
+min: -9.753847122192383
+band: 2, quad:2, binning:10
+ mean: 0.030325072152273997
+ std: 1.7591778062691585
+            max: 4.695102691650391
+min: -5.40233039855957
+band: 2, quad:3, binning:10
+ mean: 0.13732614244733538
+ std: 1.6721838341611133
+            max: 7.938226699829102
+min: -4.861305236816406
 
 Veto
 
-quad: 0
+quad: 0, binning:1
  mean: 0.011619370231267197
  std: 18.009014707924166
-    max: 84.98412753901493
+            max: 84.98412753901493
 min: -62.69479666407608
-quad: 1
+quad: 1, binning:1
  mean: 0.003772625116091869
  std: 20.398047100632994
-    max: 436.60929976498363
+            max: 436.60929976498363
 min: -65.18073166533532
-quad: 2
+quad: 2, binning:1
  mean: 0.0007048648770587992
  std: 19.92845313067504
-    max: 391.24827628399805
+            max: 391.24827628399805
 min: -73.4281865079081
-quad: 3
+quad: 3, binning:1
  mean: 0.008878149329164526
  std: 18.729327530975052
-    max: 66.10415701770808
+            max: 66.10415701770808
 min: -71.65042717858887
+quad: 0, binning:10
+ mean: -0.047698780103752905
+ std: 48.02627681159724
+            max: 157.0783216783202
+min: -140.06759906761226
+quad: 1, binning:10
+ mean: -0.09685150531426906
+ std: 60.90092511879656
+            max: 419.9020979020852
+min: -173.04895104896605
+quad: 2, binning:10
+ mean: -0.013113646928317763
+ std: 53.85634185284933
+            max: 255.96736596735172
+min: -169.99533799535038
+quad: 3, binning:10
+ mean: -0.024266813010549403
+ std: 54.92725503425875
+            max: 174.7692307692173
+min: -172.7016317016437
