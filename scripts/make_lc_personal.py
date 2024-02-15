@@ -27,6 +27,7 @@ set_of_rows = []
 
 gap = 1
 total_attempts = 100
+version = 1
 
 with open('../../data/orbitinfo.csv', 'r') as f:
     r = csv.reader(f)
@@ -64,8 +65,8 @@ for row in set_of_rows:
     orbit = row[0].split('_')[-1]
 
 
-    orbit = 43416
-    binning = [0.1,1,10]
+    # orbit = 43416
+    binning = [0.001,0.002,0.004,0.008]
     destination_path = f"/home/czti/user_area/ashwin/winter/data/evt_files/{orbit}/"
     pattern_quad_clean = f"*{orbit}*_quad_clean.evt"
     pattern_mkf = f"*{orbit}*_level2.mkf"
@@ -90,6 +91,8 @@ for row in set_of_rows:
         for band in range(3):
             make_lightcurves_v2.bindata(quad_clean_file, mkf_file, badpix_file, livetime_file, bin, f'{orbit}', band)
 
-
-    exit(0)
+    if(orbit_num==120):
+        exit(0)
+    else:
+        continue
 

@@ -156,8 +156,8 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 			# print('peakinds',peakinds)
 			total_counts = preproc.total_countrate(bins_time,peakinds,peak_ind_bin[0],lc_all)
 			# print('total counts:', total_counts)
-			print("GRB_time   Rank   Detected_in_quads  rate")
-			print('------------------------------------------')
+			# print("GRB_time   Rank   Detected_in_quads  rate")
+			# print('------------------------------------------')
 			det_quad = []
 			for counter, peakind in enumerate(peakinds):
 				if(peakind == len(bins_time)):
@@ -178,7 +178,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 				#Find detected quadrants and band and get rank
 				rank,numquads0,numquads1,numquads2 = preproc.get_rank(quads[0])
 				numquads = np.unique((numquads0+numquads1+numquads2))
-				print((str(round(bins_time[peakind],0))+'   '+str(rank)+'   '+','.join(str(f) for f in numquads)+'  '+str(np.sum(lc_all[:,:,peakind]))))
+				# print((str(round(bins_time[peakind],0))+'   '+str(rank)+'   '+','.join(str(f) for f in numquads)+'  '+str(np.sum(lc_all[:,:,peakind]))))
 				#Find distance from SAA
 				startbins = np.array(startbins)
 				stopbins = np.array(stopbins)
@@ -188,8 +188,8 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 
 				post_edge, pre_edge = saa_times(saa_start, saa_end, temp_startbin, temp_stopbin, bins_time, peakind)
 
-				print("Distance from SAA", post_edge)
-				print("Distance to SAA", pre_edge)
+				# print("Distance from SAA", post_edge)
+				# print("Distance to SAA", pre_edge)
 
 				
 				method_tag = {'cumsum' : 'C', 'nsigma' : 'N'}
@@ -207,7 +207,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 				putInBS = False
 				if method=='nsigma' and n_tbin == 0.1:
 					# Need to check for readout dips in nsigma and 0.1 tbins. 
-					print(glob.glob('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+orbit+'/*'+orbit+'*quad_clean.evt'))
+					# print(glob.glob('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+orbit+'/*'+orbit+'*quad_clean.evt'))
 					eventfile = glob.glob('/home/ashwin/False_Alarm_Rate1/data/evt_files/'+orbit+'/*'+orbit+'*quad_clean.evt')[0]
 					hdu = fits.open(eventfile)
 					readouts = [False, False, False, False] # Whether we have readout dip in each quadrant
@@ -241,7 +241,7 @@ def grb_search(args, outpaths, orbitinfo, startbins, stopbins, dirname, method, 
 					print("Readout")
 				else:
 					# lastrowid = add_czti_event(mdb, event)
-					print('Good Event')
+					# print('Good Event')
 					numgrbs = numgrbs+1
 		else:
 			numgrbs = numgrbs + 0

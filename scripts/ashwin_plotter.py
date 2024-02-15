@@ -117,6 +117,12 @@ set_of_rows = []
 gap = 1
 total_attempts = 100
 
+net_threshs = []
+net_counts = []
+
+net_datapoints = []
+
+
 with open('../../data/orbitinfo.csv', 'r') as f:
     r = csv.reader(f)
     count=0
@@ -138,6 +144,8 @@ with open('../../data/orbitinfo.csv', 'r') as f:
 skip_till = ['20230329_A12_054T02_9000005550_level2_40553', 'A12_054T02_9000005550', 'priyanka_iucaa', 'SBS 0846+513', '132.4916', '51.1414', '5100.90680462', '2023-03-29T16:16:53', '2023-03-29T18:16:54']
 skipped = 1
 orbit_num=0
+
+
 for row in set_of_rows:
     orbit_num+=1
     if(row!=skip_till and not skipped):
@@ -184,26 +192,100 @@ for row in set_of_rows:
 
     threshs = []
     counts = []
+    datapoints = []
 
     for binning_id in range(len(binnings)):
         binning = binnings[binning_id]
-        result_file = np.load(f'{result_path}/{orbit}/{orbit}_{binning}_nsigma_FAR.npy')
+        try:
+            result_file = np.load(f'{result_path}/{orbit}/{orbit}_{binning}_nsigma_FAR.npy')
+        except:
+            continue
+        # print('file', result_file)
         thresh_arr = result_file[0,:][1:]
-        count_arr = result_file[1,:][1:]/result_file[1,1]
+        count_arr = result_file[1,:][1:]/result_file[1,0]
+        datapoints.append(result_file[1,0])
+        # print(result_file[1,0])
         threshs.append(thresh_arr)
-        count.append(count_arr)
-
-
-        # print(list_of_counts)
-    # for i in range
+        counts.append(count_arr)
         plt.plot(thresh_arr, count_arr, drawstyle = "steps", label = f'{binning}')
-    
-    plt.title(f"False Alarm Rates, Orbit {orbit}, binning: {binning}, alg:nsigma")
+
+    else:
+
+        threshs = np.array(threshs)
+        counts = np.array(counts)
+        datapoints = np.array(datapoints)
+        if(threshs.shape!=(3,16) or counts.shape!=(3,16) or datapoints.shape!=(3,)):
+            print(threshs.shape, counts.shape, datapoints.shape)
+            continue
+            # exit(0)
+            # print(list_of_counts)
+        # for i in range
+        
+        plt.title(f"False Alarm Rates, Orbit {orbit}, multiple binnings, alg:nsigma")
+        plt.yscale('log')
+        plt.xlabel("nsigma threshold")
+        plt.ylabel("False Alarm Rate")
+        plt.legend()
+        plt.savefig(f"{plot_path}/{orbit}/{orbit}_False_alarm_counts_combined.png")
+        plt.close()
+
+        net_threshs.append(threshs)
+        net_counts.append(counts)
+        net_datapoints.append(datapoints)
+
+
+# print(net_counts)
+net_counts = np.array(net_counts)
+net_threshs = np.array(net_threshs)
+net_datapoints = np.array(net_datapoints)
+
+print(net_counts.shape, net_threshs.shape, net_datapoints.shape)
+
+for j in range(net_counts.shape[1]):
+    for i in range(net_counts.shape[0]):
+        # print(net_threshs[i,j,:], net_counts[i,j,:])
+        plt.plot(net_threshs[i,j,:], net_counts[i,j,:], drawstyle = "steps", label = f'{binning}', c = 'C0', alpha = 0.5)
+    plt.title(f"False Alarm Rates, {net_counts.shape[0]} orbits, binned:{binnings[j]}, alg:nsigma")
     plt.yscale('log')
     plt.xlabel("nsigma threshold")
     plt.ylabel("False Alarm Rate")
-    plt.savefig(f"{plot_path}/{orbit}/{orbit}_False_alarm_counts_combined.png")
+    # plt.legend()
+    plt.savefig(f"{plot_path}/FAR_{net_counts.shape[0]}_{binnings[j]}_nsigma.png")
     plt.close()
+
+
+# for j in range(net_counts.shape[1]):
+for i in range(net_counts.shape[0]):
+    # print(net_threshs[i,j,:], net_counts[i,j,:])
+    if(i==0):
+        plt.plot(net_threshs[i,0,:], net_counts[i,0,:], drawstyle = "steps", label = f'0.1', c = 'C0', alpha = 0.5)
+        plt.plot(net_threshs[i,1,:], net_counts[i,1,:], drawstyle = "steps", label = f'1', c = 'C1', alpha = 0.5)
+        plt.plot(net_threshs[i,2,:], net_counts[i,2,:], drawstyle = "steps", label = f'10', c = 'C2', alpha = 0.5)
+    else:
+        plt.plot(net_threshs[i,0,:], net_counts[i,0,:], drawstyle = "steps", c = 'C0', alpha = 0.5)
+        plt.plot(net_threshs[i,1,:], net_counts[i,1,:], drawstyle = "steps", c = 'C1', alpha = 0.5)
+        plt.plot(net_threshs[i,2,:], net_counts[i,2,:], drawstyle = "steps", c = 'C2', alpha = 0.5)
+plt.title(f"False Alarm Rates, {net_counts.shape[0]} orbits, binned:combined, alg:nsigma")
+plt.yscale('log')
+plt.xlabel("nsigma threshold")
+plt.ylabel("False Alarm Rate")
+plt.legend()
+plt.savefig(f"{plot_path}/FAR_{net_counts.shape[0]}_nsigma.png")
+plt.close()
+
+net_counts2 = np.sum(net_counts*net_datapoints[:,:,np.newaxis], axis=0)/np.sum(net_datapoints, axis=0)[:,np.newaxis]
+print(net_counts2.shape)
+
+plt.plot(net_threshs[0,0,:], net_counts2[0,:], drawstyle = "steps", label = f'0.1', c = 'C0', alpha = 0.8)
+plt.plot(net_threshs[0,1,:], net_counts2[1,:], drawstyle = "steps", label = f'1', c = 'C1', alpha = 0.8)
+plt.plot(net_threshs[0,2,:], net_counts2[2,:], drawstyle = "steps", label = f'10', c = 'C2', alpha = 0.8)
+plt.title(f"Combined False Alarm Rates, {net_counts.shape[0]} orbits, binned:combined, alg:nsigma")
+plt.yscale('log')
+plt.xlabel("nsigma threshold")
+plt.ylabel("False Alarm Rate")
+plt.legend()
+plt.savefig(f"{plot_path}/Combined_FAR_{net_counts.shape[0]}_nsigma.png")
+plt.close()
 
 
 
