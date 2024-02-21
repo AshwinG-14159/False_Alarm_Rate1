@@ -123,8 +123,8 @@ for row in set_of_rows:
     print("orbit num: ", orbit_num)
 
     print('trying to access row:', row)
-    # date = "20240130"
-    # orbit = "45132"
+    date = "20190926"
+    orbit = "21599"
     create_directory(f'../../data/evt_files/{orbit}')
     # target_folder = path+f'level2/{row[0][:-6]}/czti/orbit/{row[0][-5:]}_V1.0'
     # mkf_file = target_folder+f'/AS1{row[0][9:-13]}_{row[0][-5:]}czt_level2.mkf'
@@ -160,7 +160,7 @@ for row in set_of_rows:
     # else:
     #     print(f"Error fetching files. Return code: {return_code}")
     #     continue
-    # exit(0)
+    exit(0)
     if(orbit_num==120):
         exit(0)
     else:

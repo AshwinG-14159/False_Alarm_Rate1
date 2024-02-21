@@ -25,6 +25,7 @@ def examine_stats(quad_clean):
 
 set_of_rows = []
 
+binning = 0.1
 gap = 1
 total_attempts = 100
 version = 1
@@ -63,8 +64,8 @@ for row in set_of_rows:
     print('trying to access row:', row)
     date = row[0].split('_')[0]
     orbit = row[0].split('_')[-1]
-    # date = "20240130"
-    # orbit = "45132"
+    date = "20190926"
+    orbit = "21599"
 
 
     # orbit = 43416
@@ -96,12 +97,8 @@ for row in set_of_rows:
     for bin in binning:
         for band in range(3):
             make_lightcurves_v2.bindata(quad_clean_file, mkf_file, badpix_file, livetime_file, bin, f'{orbit}', band)
-<<<<<<< HEAD
-
-=======
             # exit(0)
-    # exit(0)
->>>>>>> bfb18b1 (files)
+    exit(0)
     if(orbit_num==120):
         exit(0)
     else:
