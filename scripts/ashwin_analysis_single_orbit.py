@@ -108,13 +108,9 @@ def give_window_lcs(startbins, stopbins, times, rates):
 
 
 
-def is_clean(net_times):
-    len_first = len(net_times[0])
-    element_first = net_times[0][0]
-    for arr in net_times:
-        if(arr[0]!=element_first or len(arr)!=len_first):
-            return 0
-    return 1
+def examine_stats(rates, times):
+
+    pass
 
 set_of_rows = []
 
@@ -155,9 +151,10 @@ for row in set_of_rows:
     print('trying to access row:', row)
     date = row[0].split('_')[0]
     orbit = row[0].split('_')[-1]
+    date = "20190926"
+    orbit = "21599"
 
-
-    binnings = [0.1,1,10]
+    binnings = [10,1,0.1]
 
     my_path = f"../../data/evt_files/{orbit}"
 
@@ -308,63 +305,6 @@ for row in set_of_rows:
     print("Search Starting!")
     for binning_id in range(len(binnings)):
         binning = binnings[binning_id]
-        net_rates = []
-        net_mask = []
-        net_times = []
-        for quadrant in range(4):
-            for band in range(3):
-                lc = f"{my_path}/{orbit}_{binning}_{band}_Q{quadrant}_detrended.fits"
-                with fits.open(lc) as hdul:
-                    rates = hdul[1].data['countrate']
-                    times = hdul[1].data['time']
-                    mask = hdul[1].data['mask']
-                stats = sigma_clipped_stats(rates, mask=mask,
-                            sigma=5.0, maxiters=3)
-                norm_rates = (rates - stats[0])/stats[2]
-                # print(norm_rates[:100])
-                norm_rates[norm_rates<0]=0
-                net_rates.append(norm_rates)
-                # print("mask",np.sum(mask))
-                net_mask.append(mask)
-                net_times.append(times)
-        if(not is_clean(net_times)):
-            continue
-        else:
-            time = np.array(net_times[0])
-            net_rates = np.array(net_rates)
-            # net_mask_total = np.sum(np.array(net_mask), axis = 0)
-            # net_mask = net_mask_total==12
-            quadrature_counts = np.sqrt(np.sum(np.square(net_rates), axis=0))#*net_mask
-            list_of_thresh = np.linspace(3,9,61)
-            list_of_counts = []
-            for thresh in list_of_thresh:
-                counts = np.sum(quadrature_counts>thresh)
-                list_of_counts.append(counts)
-                print(f"binning: {binning}, thresh: {thresh}, counts: {counts}")
-
-        list_of_thresh = np.array([-1]+list(list_of_thresh))
-        list_of_counts = np.array([orbit_len2[binning_id]]+list_of_counts)
-        # print(list_of_counts[0])
-        # print(len(list_of_counts), list_of_counts)
-        # print(len(list_of_thresh), list_of_thresh)
-
-        data_to_save = np.array([list_of_thresh, list_of_counts])
-        np.save(f"{result_path}/{orbit}/{orbit}_{binning}_nsigma_FAR_quadrature.npy", data_to_save)
-        # print('length of result:', list_of_counts)
-        plt.plot(list_of_thresh[1:], list_of_counts[1:]/orbit_len2[binning_id], drawstyle = "steps")
-        plt.title(f"False Alarm Rates, Quadrature Orbit {orbit}, binning: {binning}, alg:nsigma, orbitlen = {orbit_len2[binning_id]*binning}s")
-        plt.yscale('log')
-        plt.xlabel("nsigma threshold")
-        plt.ylabel("False Alarm Rate")
-        plt.savefig(f"{plot_path}/{orbit}/{orbit}_False_alarm_counts_{binning}_quadrature.png")
-        plt.close()
-
-
-                # print('Times!',times[0], len(times))
-    continue
-exit(0)
-"""
-                # exit(0)
         args.tbin = [binning]
         list_of_counts = []
         # if(binning==0.1):
@@ -380,11 +320,13 @@ exit(0)
         # print(list_of_thresh)
         list_of_thresh = np.array([-1]+list(list_of_thresh))
         list_of_counts = np.array([orbit_len2[binning_id]]+list_of_counts)
+
         # print(list_of_counts[0])
         # print(len(list_of_counts), list_of_counts)
         # print(len(list_of_thresh), list_of_thresh)
 
         data_to_save = np.array([list_of_thresh, list_of_counts])
+        # print(data_to_save.shape)
         np.save(f"{result_path}/{orbit}/{orbit}_{binning}_nsigma_FAR.npy", data_to_save)
         # print('length of result:', list_of_counts)
         plt.plot(list_of_thresh[1:], list_of_counts[1:]/orbit_len2[binning_id], drawstyle = "steps")
@@ -395,9 +337,8 @@ exit(0)
         plt.savefig(f"{plot_path}/{orbit}/{orbit}_False_alarm_counts_{binning}.png")
         plt.close()
 
-
+    exit(0)
 
 
     # exit(0)
 
-"""

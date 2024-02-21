@@ -155,7 +155,8 @@ for row in set_of_rows:
     print('trying to access row:', row)
     date = row[0].split('_')[0]
     orbit = row[0].split('_')[-1]
-
+    date = "20240130"
+    orbit = "45132"
 
     binnings = [0.1,1,10]
 
@@ -360,7 +361,8 @@ for row in set_of_rows:
         plt.close()
 
 
-                # print('Times!',times[0], len(times))
+            # print('Times!',times[0], len(times))
+    exit(0)
     continue
 exit(0)
 """
